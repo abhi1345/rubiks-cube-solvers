@@ -56,6 +56,9 @@ def validate(heuristic_fn):
 # validate(compute_number_of_misplaced_tiles_heuristic)
 
 def solve_cube_astar(cube):
+
+    cases_explored = 0
+
     visited = set()
 
     heuristic_fn = combined_heuristic
@@ -81,12 +84,20 @@ def solve_cube_astar(cube):
 
         for color in cur_cube.color_map:
             for n in range(1, 4):
+
+                if len(moves_so_far) > 0:
+                    if (color, n) == moves_so_far[-1]:
+                        continue
+                    elif (color, 4-n) == moves_so_far[-1]:
+                        continue
+
                 new_cube = copy.deepcopy(cur_cube)
                 new_cube.turn(color, n)
 
                 new_moves_so_far = moves_so_far + [(color, n)]
 
                 if new_cube.is_solved():
+                    print(f"Cases Explored: {cases_explored}")
                     return True, new_moves_so_far
                 if new_cube.state_tuple() in visited:
                     continue
@@ -94,5 +105,7 @@ def solve_cube_astar(cube):
                 new_heuristic = len(new_moves_so_far) + heuristic_fn(new_cube)
 
                 heappush(bfs_queue, (new_heuristic, new_cube, new_moves_so_far))
+
+                cases_explored += 1
     
     return False, ["Coudn't Solve"]

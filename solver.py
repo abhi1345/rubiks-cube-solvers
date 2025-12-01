@@ -6,7 +6,7 @@ import time
 
 cube = RubiksCube()
 
-cube.scramble(4)
+cube.scramble(5)
 
 cube.print_cube()
 

@@ -17,11 +17,11 @@ SOLVER_REGISTRY: Dict[str, SolverFn] = {
 
 
 def run(
-    method: str = "iddfs",
+    method: str = "astar",
     *,
-    scramble_moves: int = 6,
+    scramble_moves: int = 5,
     heuristic: Heuristic = DEFAULT_HEURISTIC,
-    max_depth: int = 6,
+    max_depth: int = 5,
 ) -> tuple[SolveResult, List[Move]]:
     cube = RubiksCube()
     scramble_sequence = cube.scramble(scramble_moves)
@@ -33,6 +33,13 @@ def run(
     kwargs = {"max_depth": max_depth}
     if method == "astar":
         kwargs["heuristic"] = heuristic
+
+    print(f"\n### SOLVER INFO ###")
+    print(f"Using solver: {method}.")
+    print(f"Using heuristic: {heuristic.__name__}")
+    print(f"Scramble depth: {scramble_moves}")
+    print(f"Max depth: {max_depth}")
+    print(f"### BEGINNING SOLVER ###\n")
 
     result = solver(cube, **kwargs)
     return result, scramble_sequence

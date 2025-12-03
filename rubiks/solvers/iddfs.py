@@ -16,17 +16,12 @@ def solve_cube_iddfs(cube: RubiksCube, *, max_depth: int = 100) -> SolveResult:
 
 def solve_cube_iddfs_helper(cube: RubiksCube, *, max_depth: int = 100) -> SolveResult:
     start = time.perf_counter()
-    visited = set()
     queue = deque([(cube.clone(), [])])
     explored = 0
 
     while queue:
         cur_cube, moves_so_far = queue.pop()
         state_key = cur_cube.state_tuple()
-        if state_key in visited:
-            continue
-        visited.add(state_key)
-
         if cur_cube.is_solved():
             return SolveResult(True, moves_so_far, explored, time.perf_counter() - start)
 
@@ -43,9 +38,6 @@ def solve_cube_iddfs_helper(cube: RubiksCube, *, max_depth: int = 100) -> SolveR
                 new_cube.turn(color, turns)
 
                 new_moves = moves_so_far + [move]
-
-                if new_cube.state_tuple() in visited:
-                    continue
 
                 queue.append((new_cube, new_moves))
                 explored += 1

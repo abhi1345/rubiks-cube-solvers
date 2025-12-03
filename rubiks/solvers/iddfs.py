@@ -28,8 +28,8 @@ def solve_cube_iddfs_helper(cube: RubiksCube, *, max_depth: int = 100) -> SolveR
         if len(moves_so_far) >= max_depth:
             continue
 
-        for color in cur_cube.color_map:
-            for turns in range(1, 4):
+        for turns in range(1, 4):
+            for color in cur_cube.color_map:
                 move = (color, turns)
                 if should_prune_move(moves_so_far, move):
                     continue

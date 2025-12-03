@@ -19,9 +19,9 @@ SOLVER_REGISTRY: Dict[str, SolverFn] = {
 def run(
     method: str = "iddfs",
     *,
-    scramble_moves: int = 5,
+    scramble_moves: int = 6,
     heuristic: Heuristic = DEFAULT_HEURISTIC,
-    max_depth: int = 5,
+    max_depth: int = 6,
 ) -> tuple[SolveResult, List[Move]]:
     cube = RubiksCube()
     scramble_sequence = cube.scramble(scramble_moves)

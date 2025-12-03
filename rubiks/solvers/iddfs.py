@@ -21,7 +21,7 @@ def solve_cube_iddfs_helper(cube: RubiksCube, *, max_depth: int = 100) -> SolveR
     explored = 0
 
     while queue:
-        cur_cube, moves_so_far = queue.popright()
+        cur_cube, moves_so_far = queue.pop()
         state_key = cur_cube.state_tuple()
         if state_key in visited:
             continue

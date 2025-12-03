@@ -1,6 +1,6 @@
 # Rubik's Cube Solvers
 
-![Rubik's Cube](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Rubik%27s_cube.svg/576px-Rubik%27s_cube.svg.png "Scrambled Rubik's Cube")
+![Rubik's Cube](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Rubik%27s_cube.svg/288px-Rubik%27s_cube.svg.png "Scrambled Rubik's Cube")
 
 This repo has a few approaches to solving the Rubik's Cube. 
 

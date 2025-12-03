@@ -5,22 +5,23 @@ from typing import Callable, Dict, List
 from rubiks import RubiksCube
 from rubiks.cube import Move
 from rubiks.heuristics import DEFAULT_HEURISTIC, Heuristic
-from rubiks.solvers import SolveResult, solve_cube_astar, solve_cube_bfs
+from rubiks.solvers import SolveResult, solve_cube_astar, solve_cube_bfs, solve_cube_iddfs
 
 SolverFn = Callable[..., SolveResult]
 
 SOLVER_REGISTRY: Dict[str, SolverFn] = {
     "astar": solve_cube_astar,
     "bfs": solve_cube_bfs,
+    "iddfs": solve_cube_iddfs,
 }
 
 
 def run(
-    method: str = "astar",
+    method: str = "iddfs",
     *,
-    scramble_moves: int = 4,
+    scramble_moves: int = 5,
     heuristic: Heuristic = DEFAULT_HEURISTIC,
-    max_depth: int = 100,
+    max_depth: int = 5,
 ) -> tuple[SolveResult, List[Move]]:
     cube = RubiksCube()
     scramble_sequence = cube.scramble(scramble_moves)

@@ -27,4 +27,9 @@ End goal here is that we can take a move sequence like:
 
 , and the arm can automatically execute that sequence. 
 
-We can assume the top face (which the robot looks down at), is F, and the face furthest from the robot is U. 
+We can assume that at the beginning of the solve, the top face (which the robot looks down at), is F, and the face furthest from the robot is U. 
+
+We need to implement functions for each turn, as well as each cube rotation, since the arm is only capable of turning the bottom side. 
+
+Cube rotation is officially working! At least along the Y-axis
+

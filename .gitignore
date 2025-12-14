@@ -123,3 +123,7 @@ dmypy.json
 .DS_Store
 Thumbs.db
 
+# Robot control generated files
+robot-control/Arm_Lib.egg-info/
+robot-control/build/
+robot-control/captures/

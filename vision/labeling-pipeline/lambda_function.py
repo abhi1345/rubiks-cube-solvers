@@ -39,3 +39,19 @@ def call_gemini(image_bytes):
 
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read())
+
+def lambda_handler(event, context):
+    record = event["Records"][0]
+    bucket = record["s3"]["bucket"]["name"]
+    key = record["s3"]["object"]["key"]
+
+    obj = s3.get_object(Bucket=bucket, Key=key)
+    image_bytes = obj["Body"].read()
+
+    print("Calling Gemini...")
+    response = call_gemini(image_bytes)
+
+    print("Gemini raw response:")
+    print(json.dumps(response, indent=2))
+
+    return {"ok": True}

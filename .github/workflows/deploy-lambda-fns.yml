@@ -1,0 +1,39 @@
+name: Deploy Lambda
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "lambda-functions/**"
+      - ".github/workflows/deploy-lambda-fns.yml"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::311549965580:role/github-actions-lambda-deployer
+          aws-region: us-east-1
+
+      - name: Zip Lambda code
+        run: |
+          cd lambda-functions/labeling-pipeline
+          zip -r ../lambda.zip .
+
+      - name: Deploy to Lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name Label-New-Rubiks-Face-Images \
+            --zip-file fileb://lambda.zip

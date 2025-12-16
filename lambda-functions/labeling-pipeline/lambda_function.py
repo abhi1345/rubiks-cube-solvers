@@ -51,6 +51,21 @@ def call_gemini(image_bytes: bytes):
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read())
 
+def extract_grid_from_response(response):
+    text = response["candidates"][0]["content"]["parts"][0]["text"]
+    return json.loads(text)
+
+def validate_grid(grid):
+    if len(grid) != 3:
+        raise ValueError("Grid must have 3 rows")
+
+    for row in grid:
+        if len(row) != 3:
+            raise ValueError("Each row must have 3 columns")
+        for val in row:
+            if not isinstance(val, int) or val < 0 or val > 5:
+                raise ValueError(f"Invalid color value: {val}")
+
 def lambda_handler(event, context):
     record = event["Records"][0]
     bucket = record["s3"]["bucket"]["name"]
@@ -62,7 +77,15 @@ def lambda_handler(event, context):
     print("Calling Gemini...")
     response = call_gemini(image_bytes)
 
-    print("Gemini raw response:")
-    print(json.dumps(response, indent=2))
+    grid_obj = extract_grid_from_response(response)
+    grid = grid_obj["grid"]
 
-    return {"ok": True}
+    validate_grid(grid)
+
+    print("Parsed grid:")
+    print(grid)
+
+    return {
+        "ok": True,
+        "grid": grid
+    }

@@ -30,7 +30,7 @@ jobs:
       - name: Zip Lambda code
         run: |
           cd lambda-functions/labeling-pipeline
-          zip -r ../lambda.zip .
+          zip -r ../../lambda.zip .
 
       - name: Deploy to Lambda
         run: |

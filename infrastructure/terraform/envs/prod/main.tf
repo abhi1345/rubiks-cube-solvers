@@ -18,7 +18,7 @@ module "labeling_pipeline" {
   aws_region                    = var.aws_region
   bucket_name                   = var.bucket_name
   labeling_lambda_function_name = var.labeling_lambda_function_name
-  lambda_role_name = var.lambda_role_name
+  lambda_role_name              = var.lambda_role_name
 
   enable_hourly_backfill = true
   backfill_rate_hours    = 1

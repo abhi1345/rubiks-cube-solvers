@@ -10,3 +10,8 @@ variable "bucket_name" {
 variable "labeling_lambda_function_name" {
   type = string
 }
+
+variable "lambda_role_name" {
+  description = "Lambda execution role name"
+  type        = string
+}

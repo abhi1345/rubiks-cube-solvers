@@ -11,3 +11,8 @@ variable "backfill_rate_hours" {
   type    = number
   default = 1
 }
+
+variable "lambda_role_name" {
+  description = "Name of the Lambda execution role for the labeling function"
+  type        = string
+}

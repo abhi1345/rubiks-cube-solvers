@@ -1,0 +1,24 @@
+PROMPT = """
+You are given an image of ONE face of a Rubik’s cube.
+
+Return ONLY valid JSON.
+Do NOT include explanation, markdown, or extra text.
+
+Format EXACTLY:
+{
+  "grid": [[int,int,int],[int,int,int],[int,int,int]]
+}
+
+Color mapping:
+white -> 0
+yellow -> 1
+red -> 2
+orange -> 3
+blue -> 4
+green -> 5
+
+Rules:
+- Grid must be exactly 3 rows
+- Each row must have exactly 3 integers
+- Only numbers 0 through 5 are allowed
+"""

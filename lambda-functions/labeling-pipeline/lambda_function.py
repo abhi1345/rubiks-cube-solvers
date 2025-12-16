@@ -3,14 +3,18 @@ import os
 import base64
 import boto3
 import urllib.request
+from datetime import datetime
 
 s3 = boto3.client("s3")
 
 GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
+BUCKET_NAME = os.environ.get("BUCKET_NAME")
 
-# Correct endpoint with working model
 MODEL = "gemini-2.5-flash"
+PROMPT_VERSION = "v1"
+
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
+
 
 def is_s3_event(event):
     return (
@@ -20,61 +24,18 @@ def is_s3_event(event):
         and "s3" in event["Records"][0]
     )
 
-def process_single_image(bucket: str, key: str):
-    # Skip non-images defensively
-    if not key.lower().endswith(".jpg"):
-        return
-
-    label_key = (
-        key.replace("dofbot/captures/", "dofbot/labels/")
-           .rsplit(".", 1)[0]
-        + ".json"
-    )
-
-    # Idempotency: skip if label already exists
-    try:
-        s3.head_object(Bucket=bucket, Key=label_key)
-        print(f"Label already exists, skipping: {label_key}")
-        return
-    except s3.exceptions.ClientError as e:
-        if e.response["Error"]["Code"] != "404":
-            raise
-
-    obj = s3.get_object(Bucket=bucket, Key=key)
-    image_bytes = obj["Body"].read()
-
-    response = call_gemini(image_bytes)
-
-    text = response["candidates"][0]["content"]["parts"][0]["text"]
-    grid_obj = json.loads(text)
-    grid = grid_obj["grid"]
-
-    validate_grid(grid)
-
-    s3.put_object(
-        Bucket=bucket,
-        Key=label_key,
-        Body=json.dumps(
-            {
-                "grid": grid,
-                "model": MODEL,
-            }
-        ).encode(),
-        ContentType="application/json",
-    )
-
-    print(f"Wrote label: {label_key}")
 
 def load_prompt():
     with open("prompt.txt", "r") as f:
         return f.read()
 
+
 PROMPT = load_prompt()
+
 
 def call_gemini(image_bytes: bytes):
     image_b64 = base64.b64encode(image_bytes).decode()
 
-    # Build payload: image + simple prompt
     payload = {
         "contents": [
             {
@@ -82,10 +43,10 @@ def call_gemini(image_bytes: bytes):
                     {
                         "inline_data": {
                             "mime_type": "image/jpeg",
-                            "data": image_b64
+                            "data": image_b64,
                         }
                     },
-                    {"text": PROMPT}
+                    {"text": PROMPT},
                 ]
             }
         ]
@@ -98,15 +59,20 @@ def call_gemini(image_bytes: bytes):
             "Content-Type": "application/json",
             "x-goog-api-key": GEMINI_API_KEY,
         },
-        method="POST"
+        method="POST",
     )
 
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read())
 
+
 def extract_grid_from_response(response):
-    text = response["candidates"][0]["content"]["parts"][0]["text"]
-    return json.loads(text)
+    try:
+        text = response["candidates"][0]["content"]["parts"][0]["text"]
+        return json.loads(text)
+    except Exception as e:
+        raise ValueError(f"Failed to parse Gemini response: {e}")
+
 
 def validate_grid(grid):
     if len(grid) != 3:
@@ -119,23 +85,70 @@ def validate_grid(grid):
             if not isinstance(val, int) or val < 0 or val > 5:
                 raise ValueError(f"Invalid color value: {val}")
 
+
+def process_single_image(bucket: str, key: str) -> bool:
+    if not key.lower().endswith(".jpg"):
+        return False
+
+    label_key = (
+        key.replace("dofbot/captures/", "dofbot/labels/")
+        .rsplit(".", 1)[0]
+        + ".json"
+    )
+
+    # Idempotency check
+    try:
+        s3.head_object(Bucket=bucket, Key=label_key)
+        print(f"Label already exists, skipping: {label_key}")
+        return False
+    except s3.exceptions.ClientError as e:
+        if e.response["Error"]["Code"] != "404":
+            raise
+
+    obj = s3.get_object(Bucket=bucket, Key=key)
+    image_bytes = obj["Body"].read()
+
+    response = call_gemini(image_bytes)
+    grid_obj = extract_grid_from_response(response)
+
+    grid = grid_obj["grid"]
+    validate_grid(grid)
+
+    s3.put_object(
+        Bucket=bucket,
+        Key=label_key,
+        Body=json.dumps(
+            {
+                "grid": grid,
+                "model": MODEL,
+                "prompt_version": PROMPT_VERSION,
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+            }
+        ).encode(),
+        ContentType="application/json",
+    )
+
+    print(f"Wrote label: {label_key}")
+    return True
+
+
 def backfill_unlabeled_images(bucket: str, max_images: int = 50):
     paginator = s3.get_paginator("list_objects_v2")
     processed = 0
 
     for page in paginator.paginate(
         Bucket=bucket,
-        Prefix="dofbot/captures/"
+        Prefix="dofbot/captures/",
     ):
         for obj in page.get("Contents", []):
-            key = obj["Key"]
-
-            process_single_image(bucket, key)
-            processed += 1
-
             if processed >= max_images:
                 print("Backfill cap reached, stopping")
                 return
+
+            key = obj["Key"]
+            if process_single_image(bucket, key):
+                processed += 1
+
 
 def lambda_handler(event, context):
     if is_s3_event(event):
@@ -145,10 +158,8 @@ def lambda_handler(event, context):
 
         print(f"S3 trigger for {key}")
         process_single_image(bucket, key)
-
     else:
-        bucket = os.environ["BUCKET_NAME"]
         print("Running hourly backfill")
-        backfill_unlabeled_images(bucket)
+        backfill_unlabeled_images(BUCKET_NAME)
 
     return {"ok": True}

@@ -37,6 +37,8 @@ https://github.com/user-attachments/assets/abd3d752-8b16-4eca-8952-4d69445cb350
 
 ## 12/15/2025
 
+### 5 PM
+
 I'm realizing I can't work on the robot motion control portion of this project until I figure out a good anchoring position for the arm. It can't rotate the cube along its X-axis (move front face to bottom) in its current position (see video above). 
 
 So, I'm taking a break from motion control and working on the vision module. I want this to be as made-from-scratch as possible but I also want to get it working. I'm considering starting with a vision API, likely a Gemini model since those are the current vision understanding leaders. I would later move to my own trained lightweight nn. The ultimate goal is for this to be a fully standalone edge device, so we will need efficient algorithms for CV and solving. But we can plug those in later, let's focus on e2e working solution first. 
@@ -44,3 +46,8 @@ So, I'm taking a break from motion control and working on the vision module. I w
 At a high level, the CV requirements are this:
 * Input: Pictures of each cube (6 pics, 1 of each face). Needs to include orientation of each face, so the color of the face center as well as the color of the face above it. These can be determined by the robot during inspection, but for v1 let's just label those face colors ourself. 
 * Output: Cube state as a python data structure. 
+
+Later, we'll want to pair this with an inspection motion control sequence so we can automatically look at the entire cube and identify the state. 
+
+### 11 PM
+Just finished collecting a ton of training data. I took pics of different scrambled faces of the cube. I want to set up an automated training pipeline where each time I take a picture, it gets labeled automatically. Label for a face would just be 9 numbers in [0,5], representing the colors from top to bottom, left to right. 

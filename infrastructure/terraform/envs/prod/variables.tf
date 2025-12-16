@@ -7,6 +7,6 @@ variable "bucket_name" {
   type = string
 }
 
-variable "lambda_function_name" {
+variable "labeling_lambda_function_name" {
   type = string
 }

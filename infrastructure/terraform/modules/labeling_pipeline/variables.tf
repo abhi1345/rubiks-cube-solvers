@@ -1,6 +1,6 @@
 variable "aws_region" { type = string }
 variable "bucket_name" { type = string }
-variable "lambda_function_name" { type = string }
+variable "labeling_lambda_function_name" { type = string }
 
 variable "enable_hourly_backfill" {
   type    = bool

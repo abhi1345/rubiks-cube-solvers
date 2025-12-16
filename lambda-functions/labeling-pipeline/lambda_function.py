@@ -108,7 +108,24 @@ def call_gemini_with_retry(image_bytes: bytes, max_retries: int = 3):
 def extract_grid_from_response(response):
     try:
         text = response["candidates"][0]["content"]["parts"][0]["text"]
-        return json.loads(text)
+
+        if not text or not text.strip():
+            raise ValueError("Empty Gemini response")
+
+        # Log raw output once for debugging
+        print("Raw Gemini output:")
+        print(repr(text))
+
+        # Extract JSON object from text
+        start = text.find("{")
+        end = text.rfind("}")
+
+        if start == -1 or end == -1 or end <= start:
+            raise ValueError("No JSON object found in Gemini output")
+
+        json_str = text[start:end + 1]
+        return json.loads(json_str)
+
     except Exception as e:
         raise ValueError(f"Failed to parse Gemini response: {e}")
 

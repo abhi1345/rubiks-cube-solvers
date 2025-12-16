@@ -21,4 +21,12 @@ Rules:
 - Grid must be exactly 3 rows
 - Each row must have exactly 3 integers
 - Only numbers 0 through 5 are allowed
+
+Example:
+If the image has 3 red squares in the top row,
+3 yellow squares in the bottom row,
+and 3 blue squares in the middle row, return:
+{
+  "grid": [[2, 2, 2],[5, 5, 5],[1, 1, 1]]
+}
 """

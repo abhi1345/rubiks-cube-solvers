@@ -21,7 +21,7 @@ BUCKET_NAME = os.environ.get("BUCKET_NAME")
 # --------------------
 # Gemini config
 # --------------------
-MODEL = "gemma-3-12b"
+MODEL = "gemini-2.5-flash"
 PROMPT_VERSION = "v1"
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 

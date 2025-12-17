@@ -16,4 +16,6 @@ def lambda_handler(event, _context):
         print(f"Running scheduled backfill (max {MAX_BACKFILL_LABELS} labels)")
         backfill_unlabeled_images(BUCKET_NAME, max_labels=MAX_BACKFILL_LABELS)
 
+    print("Finished running labeling pipeline lambda function.")
+
     return {"ok": True}

@@ -1,9 +1,9 @@
 """High-level labeling workflows."""
 import json
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List
 
-from config import MODEL, PROMPT_VERSION, s3
+from config import BACKFILL_LOOKBACK_MINUTES, MODEL, PROMPT_VERSION, s3
 from gemini_client import call_gemini_with_retry
 
 
@@ -94,6 +94,7 @@ def process_single_image(bucket: str, key: str) -> bool:
 def backfill_unlabeled_images(bucket: str, max_labels: int = 5) -> None:
     paginator = s3.get_paginator("list_objects_v2")
     labeled = 0
+    cutoff = datetime.now(timezone.utc) - timedelta(minutes=BACKFILL_LOOKBACK_MINUTES)
 
     for page in paginator.paginate(Bucket=bucket, Prefix="dofbot/captures/"):
         for obj in page.get("Contents", []):
@@ -102,5 +103,9 @@ def backfill_unlabeled_images(bucket: str, max_labels: int = 5) -> None:
                 return
 
             key = obj["Key"]
+            last_modified = obj.get("LastModified")
+            if last_modified and last_modified < cutoff:
+                print(f"Skipping old capture: {key}")
+                continue
             if process_single_image(bucket, key):
                 labeled += 1

@@ -13,10 +13,11 @@ GEMINI_URL = (
 )
 # Default number of labels per scheduled run; keep here for reuse.
 MAX_BACKFILL_LABELS = 500
+# Only consider captures uploaded within this many minutes when backfilling.
+BACKFILL_LOOKBACK_MINUTES = int(os.environ.get("BACKFILL_LOOKBACK_MINUTES", "60"))
 
 # Shared AWS client
 s3 = boto3.client("s3")
-
 
 def is_s3_event(event: Dict[str, Any]) -> bool:
     """Return True if the Lambda event was triggered from S3."""

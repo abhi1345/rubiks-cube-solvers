@@ -12,7 +12,7 @@ GEMINI_URL = (
     f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 )
 # Default number of labels per scheduled run; keep here for reuse.
-MAX_BACKFILL_LABELS = 5
+MAX_BACKFILL_LABELS = 100
 
 # Shared AWS client
 s3 = boto3.client("s3")

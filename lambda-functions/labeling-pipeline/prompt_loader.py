@@ -1,4 +1,6 @@
-PROMPT = """
+"""Utility helpers for loading the labeling prompt text."""
+
+PROMPT_TEXT = '''PROMPT = """
 You are given an image of ONE face of a Rubik’s cube.
 
 Return ONLY valid JSON.
@@ -29,4 +31,11 @@ and 3 blue squares in the middle row, return:
 {
   "grid": [[2, 2, 2],[5, 5, 5],[1, 1, 1]]
 }
-"""
+"""'''
+
+
+def load_prompt() -> str:
+    return PROMPT_TEXT
+
+
+PROMPT = load_prompt()

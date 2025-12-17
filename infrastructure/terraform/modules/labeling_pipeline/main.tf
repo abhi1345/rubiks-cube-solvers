@@ -16,8 +16,7 @@ resource "aws_cloudwatch_event_target" "invoke_lambda" {
 }
 
 resource "aws_lambda_permission" "allow_eventbridge" {
-  count         = var.enable_hourly_backfill ? 1 : 0
-  statement_id  = "AllowExecutionFromEventBridgeBackfill"
+  statement_id  = "AllowExecutionFromEventBridgeBackfill-Terraform"
   action        = "lambda:InvokeFunction"
   function_name = var.labeling_lambda_function_name
   principal     = "events.amazonaws.com"

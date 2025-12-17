@@ -127,3 +127,11 @@ Thumbs.db
 robot-control/Arm_Lib.egg-info/
 robot-control/build/
 robot-control/captures/
+
+# Terraform artifacts
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log

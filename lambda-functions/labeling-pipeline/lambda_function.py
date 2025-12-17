@@ -227,7 +227,7 @@ def lambda_handler(event, context):
         process_single_image(bucket, key)
 
     else:
-        print("Running hourly backfill (max 5 labels)")
+        print("Running scheduled backfill (max 5 labels)")
         backfill_unlabeled_images(BUCKET_NAME, max_labels=5)
 
     return {"ok": True}

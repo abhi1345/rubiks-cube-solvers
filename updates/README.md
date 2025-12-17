@@ -51,3 +51,20 @@ Later, we'll want to pair this with an inspection motion control sequence so we 
 
 ### 11 PM
 Just finished collecting a ton of training data. I took pics of different scrambled faces of the cube. I want to set up an automated training pipeline where each time I take a picture, it gets labeled automatically. Label for a face would just be 9 numbers in [0,5], representing the colors from top to bottom, left to right. 
+
+## 12/16/2025
+
+Today, I cleaned up the data labeling pipeline. This is more of a concept prototype than something I'd use in production. The basic flow is:
+
+`Python Code Controlling Robot`
+1. Image gets taken of cube face on robot arm
+2. Image gets sent to AWS S3 bucket
+
+`AWS Lambda Function`
+1. Function is triggered by new object created in bucket's `captures/` directory
+2. Function runs: calls Gemini API to label the image
+3. Image label gets added as a `.json` file to `labels/` directory
+
+`EventBridge Schedule`
+1. Every hour, we run the labeling lambda function
+2. The function checks for unlabeled images and labels them using Gemini

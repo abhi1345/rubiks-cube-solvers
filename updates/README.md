@@ -68,3 +68,8 @@ Today, I cleaned up the data labeling pipeline. This is more of a concept protot
 `EventBridge Schedule`
 1. Every hour, we run the labeling lambda function
 2. The function checks for unlabeled images and labels them using Gemini
+
+Some next steps I want to do:
+* Automate the data collection portion of this
+    * Set up each turn/rotation via robot arm
+    * Make the arm snap and send image on its own

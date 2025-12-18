@@ -104,8 +104,8 @@ def backfill_unlabeled_images(bucket: str, max_labels: int = 5) -> None:
 
             key = obj["Key"]
             last_modified = obj.get("LastModified")
-            if last_modified and last_modified < cutoff:
-                print(f"Skipping old capture: {key}")
-                continue
+            # if last_modified and last_modified < cutoff:
+            #     print(f"Skipping old capture: {key}")
+            #     continue
             if process_single_image(bucket, key):
                 labeled += 1

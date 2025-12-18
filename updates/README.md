@@ -73,3 +73,9 @@ Some next steps I want to do:
 * Automate the data collection portion of this
     * Set up each turn/rotation via robot arm
     * Make the arm snap and send image on its own
+
+## 12/17/2025
+
+I have been able to get the arm and cube anchored! And the images in S3 are all labeled. 
+
+I am only at 81 images though, so next step is definitely collecting more training images and running them through the Gemini labeling pipeline. 

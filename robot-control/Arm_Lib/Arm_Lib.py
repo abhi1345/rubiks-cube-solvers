@@ -6,11 +6,29 @@ import serial
 import struct
 #import threading
 
+import platform
+import glob
+
+def load_device_name():
+	system = platform.system()
+
+	if system == "Darwin":
+		ports = glob.glob("/dev/tty.usbserial-*")
+	elif system == "Linux":
+		ports = glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*")
+	else:
+		raise RuntimeError(f"Unsupported OS: {system}")
+
+	if not ports:
+		raise RuntimeError("No serial device found")
+
+	return ports[0]
 
 class Arm_Device(object):
 
-	def __init__(self,com="/dev/tty.usbserial-1120"):
-	
+	def __init__(self,com=None):
+		com = load_device_name()
+
 		self.addr = 0x15
 		self.__HEAD = 0xFF
 		self.__DEVICE_ID = 0xFC
@@ -34,7 +52,7 @@ class Arm_Device(object):
 		self.state = 0
 		self.speech_state = 0
 		
-		self.ser = serial.Serial(com, 115200,timeout=.2)
+		self.ser = serial.Serial(com, 115200,timeout=.5)
 		sleep(.2)
 		
 	# 根据数据帧的类型来做出对应的解析
@@ -516,8 +534,8 @@ class Arm_Device(object):
 				
 				value = 0
 				times += 1
-				if time >= 5:
-					return NODE
+				if times >= 5:
+					return None
 			return value
 		else:
 			return node

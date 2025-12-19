@@ -79,3 +79,5 @@ Some next steps I want to do:
 I have been able to get the arm and cube anchored! And the images in S3 are all labeled. 
 
 I am only at 81 images though, so next step is definitely collecting more training images and running them through the Gemini labeling pipeline. 
+
+## 12/18/2025

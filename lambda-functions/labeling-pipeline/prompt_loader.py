@@ -23,6 +23,10 @@ Rules:
 - Grid must be exactly 3 rows
 - Each row must have exactly 3 integers
 - Only numbers 0 through 5 are allowed
+- If the image is not properly oriented or does not clearly show a single 3x3 cube face, return:
+{
+  "grid": [[-1, -1, -1],[-1, -1, -1],[-1, -1, -1]]
+}
 
 Example:
 If the image has 3 red squares in the top row,

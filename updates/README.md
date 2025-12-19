@@ -81,3 +81,13 @@ I have been able to get the arm and cube anchored! And the images in S3 are all 
 I am only at 81 images though, so next step is definitely collecting more training images and running them through the Gemini labeling pipeline. 
 
 ## 12/18/2025
+
+Got really rough cube rotations working. Rotating the cube about its x axis (bring bottom face to front) is quite challenging with the arm's ROM. Needs some more tweaks to get it perfect. Will work on this tomorrow. 
+
+Order of work seems to be:
+1. Get rotations working
+2. Get turns working
+3. Get arm to move to perfect spot to take pic
+4. Have it do random turns/rotations + take pics + upload to S3
+
+Have limited time so will be lucky to get \#1 fully done before weekend.
